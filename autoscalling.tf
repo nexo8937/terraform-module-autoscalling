@@ -2,30 +2,12 @@
 resource "aws_launch_template" "exo-aws_launch_template" {
   name                   = "wordpress-LT"
   description            = "lauch tamplate with terraform"
-  image_id               = data.aws_ami.wordpress-image.image_id
+  image_id               = var.image-id
   instance_type          = "t2.micro"
-  vpc_security_group_ids = [data.terraform_remote_state.backend.outputs.autoscaling-id]
+  vpc_security_group_ids = [var.sg]
   lifecycle {
     create_before_destroy = true
   }
-}
-#image-data
-data "aws_ami" "wordpress-image" {
-  filter {
-    name   = "name"
-    values = ["exo-image"]
-  }
-}
-
-#remote-state-data
-data "terraform_remote_state" "backend" {
-  backend = "s3"
-  config  = {
-    bucket = "tfstate-wordpress"
-    key    = "main"
-    region = "us-east-1"
-  }
-
 }
 
 #Create Autoscaling Group
@@ -36,7 +18,7 @@ resource "aws_autoscaling_group" "web" {
   min_size                  = 1
   health_check_grace_period = 300
   health_check_type         = "ELB"
-  vpc_zone_identifier       = [data.terraform_remote_state.backend.outputs.priv-sub-A , data.terraform_remote_state.backend.outputs.priv-sub-B]
+  vpc_zone_identifier       = [var.priv-sub-A , var.priv-sub-B]
   load_balancers            = [data.terraform_remote_state.backend.outputs.loadbalancer]
   launch_template {
     id = aws_launch_template.exo-aws_launch_template.id
@@ -97,4 +79,3 @@ resource "aws_cloudwatch_metric_alarm" "scale-down-alarm" {
   alarm_description = "This metric monitor EC2 instance CPU utilization down"
   alarm_actions     = [aws_autoscaling_policy.exo-atoscaling-policy-down.arn]
 }
-
