@@ -19,7 +19,7 @@ resource "aws_autoscaling_group" "web" {
   health_check_grace_period = 300
   health_check_type         = "ELB"
   vpc_zone_identifier       = [var.priv-sub-A , var.priv-sub-B]
-  load_balancers            = [data.terraform_remote_state.backend.outputs.loadbalancer]
+  load_balancers            = [var.load-balancer]
   launch_template {
     id = aws_launch_template.exo-aws_launch_template.id
   }
