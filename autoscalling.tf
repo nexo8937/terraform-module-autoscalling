@@ -1,5 +1,5 @@
 #Create Launch Tamplate
-resource "aws_launch_template" "exo-aws_launch_template" {
+resource "aws_launch_template" "aws-launch-template" 
   name                   = "wordpress-LT"
   description            = "lauch tamplate with terraform"
   image_id               = var.image-id
@@ -12,7 +12,7 @@ resource "aws_launch_template" "exo-aws_launch_template" {
 
 #Create Autoscaling Group
 resource "aws_autoscaling_group" "web" {
-  name                      = "exo-autoscaling"
+  name                      = "autoscaling"
   desired_capacity          = 2
   max_size                  = 2
   min_size                  = 1
@@ -21,13 +21,13 @@ resource "aws_autoscaling_group" "web" {
   vpc_zone_identifier       = [var.priv-sub-A , var.priv-sub-B]
   load_balancers            = [var.load-balancer]
   launch_template {
-    id = aws_launch_template.exo-aws_launch_template.id
+    id = aws_launch_template.aws-launch-template.id
   }
 }
 
 
 #Create Autoscaling Policie up
-resource "aws_autoscaling_policy" "exo-atoscaling-policy-up" {
+resource "aws_autoscaling_policy" "atoscaling-policy-up" {
   name                   = "web-policy-up"
   autoscaling_group_name = aws_autoscaling_group.web.name
   adjustment_type        = "ChangeInCapacity"
@@ -50,11 +50,11 @@ resource "aws_cloudwatch_metric_alarm" "scale-up-alarm" {
     "autoscalinggroupname" = aws_autoscaling_group.web.name
   }
   alarm_description = "This metric monitor EC2 instance CPU utilization up"
-  alarm_actions     = [aws_autoscaling_policy.exo-atoscaling-policy-up.arn]
+  alarm_actions     = [aws_autoscaling_policy.atoscaling-policy-up.arn]
 }
 
 #Create Autoscaling Policie down
-resource "aws_autoscaling_policy" "exo-atoscaling-policy-down" {
+resource "aws_autoscaling_policy" "atoscaling-policy-down" {
   name                   = "web-policy-down"
   scaling_adjustment     = -1
   adjustment_type        = "ChangeInCapacity"
@@ -77,5 +77,5 @@ resource "aws_cloudwatch_metric_alarm" "scale-down-alarm" {
     AutoScalingGroupName = aws_autoscaling_group.web.name
   }
   alarm_description = "This metric monitor EC2 instance CPU utilization down"
-  alarm_actions     = [aws_autoscaling_policy.exo-atoscaling-policy-down.arn]
+  alarm_actions     = [aws_autoscaling_policy.atoscaling-policy-down.arn]
 }
