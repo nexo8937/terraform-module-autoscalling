@@ -1,5 +1,5 @@
 #Create Launch Tamplate
-resource "aws_launch_template" "aws-launch-template" 
+resource "aws_launch_template" "aws-launch-template" { 
   name                   = "wordpress-LT"
   description            = "lauch tamplate with terraform"
   image_id               = var.image-id
