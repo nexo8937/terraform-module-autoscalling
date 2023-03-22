@@ -1,9 +1,8 @@
 #Create Launch Tamplate
 resource "aws_launch_template" "aws-launch-template" { 
-  name                   = "wordpress-LT"
-  description            = "lauch tamplate with terraform"
+  name                   = "launch-template"
   image_id               = var.image-id
-  instance_type          = "t2.micro"
+  instance_type          = var.instance-type
   vpc_security_group_ids = [var.sg]
   lifecycle {
     create_before_destroy = true
@@ -43,9 +42,9 @@ resource "aws_cloudwatch_metric_alarm" "scale-up-alarm" {
   evaluation_periods  = "1"
   metric_name         = "CPUUtilization"
   namespace           = "AWS/EC2"
-  period              = "120"
+  period              = var.scale-up-period
   statistic           = "Average"
-  threshold           = "80"
+  threshold           = var.scale-up-threshold
   dimensions = {
     "autoscalinggroupname" = aws_autoscaling_group.web.name
   }
@@ -70,9 +69,9 @@ resource "aws_cloudwatch_metric_alarm" "scale-down-alarm" {
   evaluation_periods  = "1"
   metric_name         = "CPUUtilization"
   namespace           = "AWS/EC2"
-  period              = "120"
+  period              = var.scale-down-period
   statistic           = "Average"
-  threshold           = "20"
+  threshold           = var.scale-down-threshold
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.web.name
   }
