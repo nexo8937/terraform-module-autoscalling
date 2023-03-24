@@ -78,3 +78,43 @@ resource "aws_cloudwatch_metric_alarm" "scale-down-alarm" {
   alarm_description = "This metric monitor EC2 instance CPU utilization down"
   alarm_actions     = [aws_autoscaling_policy.atoscaling-policy-down.arn]
 }
+
+
+#Autoscaling SECURITY GROUP
+resource "aws_security_group" "autoscaling-sg" {
+  name        = "autoscaling-sg"
+  vpc_id      = var.vpc
+  description = "Allow http"
+
+  ingress {
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = var.lb-sg
+#    security_groups = [aws_security_group.lb-sg.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "Web server sg"
+  }
+}
+
+resource "aws_security_group_rule" "example" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+#  cidr_blocks = ["0.0.0.0/0"]
+  source_security_group_id = aws_security_group.autoscaling-sg.id
+#   self =  [aws_security_group.test.id]
+# security_group_id = data.terraform_remote_state.backend.outputs.sg-id
+  security_group_id = var.db-sg
+}
+
