@@ -108,8 +108,8 @@ resource "aws_security_group" "autoscaling-sg" {
 
 resource "aws_security_group_rule" "example" {
   type              = "ingress"
-  from_port         = 22
-  to_port           = 22
+  from_port         = 3306
+  to_port           = 3306
   protocol          = "tcp"
 #  cidr_blocks = ["0.0.0.0/0"]
   source_security_group_id = aws_security_group.autoscaling-sg.id
