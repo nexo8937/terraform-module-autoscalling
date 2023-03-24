@@ -1,5 +1,5 @@
 #Create Launch Tamplate
-resource "aws_launch_template" "aws-launch-template" { 
+resource "aws_launch_template" "aws-launch-template" {
   name                   = "launch-template"
   image_id               = var.image-id
   instance_type          = var.instance-type
@@ -17,7 +17,7 @@ resource "aws_autoscaling_group" "web" {
   min_size                  = 1
   health_check_grace_period = 300
   health_check_type         = "ELB"
-  vpc_zone_identifier       = [var.priv-sub-A , var.priv-sub-B]
+  vpc_zone_identifier       = [var.priv-sub-A, var.priv-sub-B]
   load_balancers            = [var.load-balancer]
   launch_template {
     id = aws_launch_template.aws-launch-template.id
@@ -91,7 +91,6 @@ resource "aws_security_group" "autoscaling-sg" {
     to_port         = 80
     protocol        = "tcp"
     security_groups = [var.lb-sg]
-#    security_groups = [aws_security_group.lb-sg.id]
   }
 
   egress {
@@ -107,14 +106,11 @@ resource "aws_security_group" "autoscaling-sg" {
 }
 
 resource "aws_security_group_rule" "example" {
-  type              = "ingress"
-  from_port         = 3306
-  to_port           = 3306
-  protocol          = "tcp"
-#  cidr_blocks = ["0.0.0.0/0"]
+  type      = "ingress"
+  from_port = 3306
+  to_port   = 3306
+  protocol  = "tcp"
   source_security_group_id = aws_security_group.autoscaling-sg.id
-#   self =  [aws_security_group.test.id]
-# security_group_id = data.terraform_remote_state.backend.outputs.sg-id
   security_group_id = var.db-sg
 }
 
