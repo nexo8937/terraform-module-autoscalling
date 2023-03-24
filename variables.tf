@@ -19,7 +19,7 @@ variable "scale-down-period" {
 }
 
 variable "image-id" {}
-#variable "sg" {}
+variable "vpc" {}
 variable "priv-sub-A" {}
 variable "priv-sub-B" {}
 variable "load-balancer" {}
