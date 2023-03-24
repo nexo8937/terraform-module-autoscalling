@@ -3,7 +3,7 @@ resource "aws_launch_template" "aws-launch-template" {
   name                   = "launch-template"
   image_id               = var.image-id
   instance_type          = var.instance-type
-  vpc_security_group_ids = [var.sg]
+  vpc_security_group_ids = [aws_security_group.autoscaling-sg.id]
   lifecycle {
     create_before_destroy = true
   }
