@@ -30,6 +30,4 @@ variable "load-balancer" {}
 
 variable "lb-sg" {}
 
-variable "db-sg" {}
-
 variable "database-sg" {}
