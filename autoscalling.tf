@@ -3,7 +3,7 @@ resource "aws_launch_template" "aws-launch-template" {
   name                   = "launch-template"
   image_id               = var.image-id
   instance_type          = var.instance-type
-  vpc_security_group_ids = [aws_security_group.autoscaling-sg.id]
+  vpc_security_group_ids = [aws_security_group.autoscaling-sg.id , var.database-sg]
   lifecycle {
     create_before_destroy = true
   }
@@ -105,14 +105,6 @@ resource "aws_security_group" "autoscaling-sg" {
   }
 }
 
-resource "aws_security_group_rule" "example" {
-  type      = "ingress"
-  from_port = 3306
-  to_port   = 3306
-  protocol  = "tcp"
-  source_security_group_id = aws_security_group.autoscaling-sg.id
-  security_group_id = var.db-sg
-}
 
 
 
